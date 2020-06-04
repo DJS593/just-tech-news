@@ -1,12 +1,25 @@
 const router = require('express').Router();
 const { Comment } = require('../../models');
 
-router.get('/', (req, res) => {
 
+// get Comment data; did not include User or Post data but can do so by using the include method
+router.get('/', (req, res) => {
+  Comment.findAll({
+    attributes: [
+      'id',
+      'comment_text'
+    ]
+  })
+    .then(dbCommentData => res.json(dbCommentData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 
 });
 
 
+// post comment data
 router.post('/', (req, res) => {
   Comment.create({
     comment_text: req.body.comment_text,
@@ -22,9 +35,23 @@ router.post('/', (req, res) => {
 });
 
 
-router.delete('/', (req, res) => {
-
-
+router.delete('/:id', (req, res) => {
+  Comment.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(dbCommentData => {
+      if(!dbCommentData) {
+        res.status(404).json({ message: 'No comment found with this id' });
+        return;
+      }
+      res.json(dbCommentData);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 
