@@ -38,6 +38,7 @@ router.get('/', (req, res) => {
     });
 });
 
+const promp = new Promise((res,rej)=>rej(0))
 
 // GET a single Post
 router.get('/:id', (req, res) => {
